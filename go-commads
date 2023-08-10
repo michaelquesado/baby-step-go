@@ -1,0 +1,5 @@
+go build -> build project
+go mod init *module name* -> initialize a module
+go run *.go -> execute a go file
+go get github.com/package-url -> 
+go mod tidy -> remove packages not used in the project
