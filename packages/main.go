@@ -2,10 +2,13 @@ package main
 
 import (
 	"fmt"
-	"module/helper"
+
+	"github.com/badoux/checkmail"
 )
 
 func main() {
-	helper.Write()
+
+	err := checkmail.ValidateFormat("invalid")
 	fmt.Println("writing from the main")
+	fmt.Println(err)
 }
