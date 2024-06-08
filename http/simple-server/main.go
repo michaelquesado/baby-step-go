@@ -13,5 +13,9 @@ func helloWordHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		return
 	}
+	if !r.URL.Query().Has("cep") {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
 	w.Write([]byte("Hello, Word!"))
 }
