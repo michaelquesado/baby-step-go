@@ -4,10 +4,14 @@ import "net/http"
 
 func main() {
 
-	http.HandleFunc("/", helloWord)
+	http.HandleFunc("/", helloWordHandler)
 	http.ListenAndServe(":8080", nil)
 }
 
-func helloWord(w http.ResponseWriter, r *http.Request) {
+func helloWordHandler(w http.ResponseWriter, r *http.Request) {
+	if r.URL.Path != "/" {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 	w.Write([]byte("Hello, Word!"))
 }
