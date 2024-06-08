@@ -58,8 +58,13 @@ func helloWordHandler(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(string(parseStrucToJson(NewValidation("Invalid cep")))))
 		return
 	}
+	cepRes, err := fetchCep(cep)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(string(parseStrucToJson(fetchCep(cep)))))
+	w.Write([]byte(string(parseStrucToJson(cepRes))))
 }
 
 func parseStrucToJson(s any) []byte {
@@ -70,20 +75,20 @@ func parseStrucToJson(s any) []byte {
 	return res
 }
 
-func fetchCep(cep string) *Cep {
+func fetchCep(cep string) (*Cep, error) {
 	res, err := http.Get("https://viacep.com.br/ws/" + cep + "/json/")
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	defer res.Body.Close()
 	body, err := io.ReadAll(res.Body)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
 	var c = Cep{}
 	err = json.Unmarshal(body, &c)
 	if err != nil {
-		panic(err)
+		return nil, err
 	}
-	return &c
+	return &c, nil
 }
