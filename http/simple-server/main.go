@@ -71,17 +71,17 @@ func parseStrucToJson(s any) []byte {
 }
 
 func fetchCep(cep string) *Cep {
-	req, err := http.Get("https://viacep.com.br/ws/" + cep + "/json/")
+	res, err := http.Get("https://viacep.com.br/ws/" + cep + "/json/")
 	if err != nil {
 		panic(err)
 	}
-	defer req.Body.Close()
-	res, err := io.ReadAll(req.Body)
+	defer res.Body.Close()
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		panic(err)
 	}
 	var c = Cep{}
-	err = json.Unmarshal(res, &c)
+	err = json.Unmarshal(body, &c)
 	if err != nil {
 		panic(err)
 	}
