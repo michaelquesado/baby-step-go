@@ -2,15 +2,22 @@ package main
 
 import (
 	"encoding/json"
+	"io"
 	"net/http"
 )
 
-func main() {
-
-	http.HandleFunc("/", helloWordHandler)
-	http.ListenAndServe(":8080", nil)
+type Cep struct {
+	Cep         string `json:"cep"`
+	Logradouro  string `json:"logradouro"`
+	Complemento string `json:"complemento"`
+	Bairro      string `json:"bairro"`
+	Localidade  string `json:"localidade"`
+	Uf          string `json:"uf"`
+	Ibge        string `json:"ibge"`
+	Gia         string `json:"gia"`
+	Ddd         string `json:"ddd"`
+	Siafi       string `json:"siafi"`
 }
-
 type Validation struct {
 	Error string `json:"error"`
 }
@@ -27,6 +34,12 @@ type CepResponse struct {
 func NewCepResponse(msg string) *CepResponse {
 	c := CepResponse{Msg: msg}
 	return &c
+}
+
+func main() {
+
+	http.HandleFunc("/", helloWordHandler)
+	http.ListenAndServe(":8080", nil)
 }
 
 func helloWordHandler(w http.ResponseWriter, r *http.Request) {
@@ -46,7 +59,7 @@ func helloWordHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(string(parseStrucToJson(NewCepResponse("Hello, World!")))))
+	w.Write([]byte(string(parseStrucToJson(fetchCep(cep)))))
 }
 
 func parseStrucToJson(s any) []byte {
@@ -55,4 +68,22 @@ func parseStrucToJson(s any) []byte {
 		panic(err)
 	}
 	return res
+}
+
+func fetchCep(cep string) *Cep {
+	req, err := http.Get("https://viacep.com.br/ws/" + cep + "/json/")
+	if err != nil {
+		panic(err)
+	}
+	defer req.Body.Close()
+	res, err := io.ReadAll(req.Body)
+	if err != nil {
+		panic(err)
+	}
+	var c = Cep{}
+	err = json.Unmarshal(res, &c)
+	if err != nil {
+		panic(err)
+	}
+	return &c
 }
