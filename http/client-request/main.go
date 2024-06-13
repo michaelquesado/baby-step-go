@@ -13,6 +13,7 @@ func main() {
 	}
 	req.Header.Set("Accept", "application/json")
 	// req.Header.Set("Authorization", "Bearer x-token")
+	// res1, err := http.DefaultClient.Do(req)
 	res, err := c.Do(req)
 	if err != nil {
 		panic(err)
