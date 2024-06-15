@@ -27,4 +27,20 @@ func main() {
 		panic(err)
 	}
 	defer db.Close()
+	p := NewProduct("Camisa Polo", 159.29)
+	if err := insertProduct(db, p); err != nil {
+		panic(err)
+	}
+}
+
+func insertProduct(db *sql.DB, p *Product) error {
+	stmt, err := db.Prepare("insert into products (id, name, price) values (?,?,?)")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(p.Id, p.Name, p.Price)
+	if err != nil {
+		return err
+	}
+	return nil
 }
