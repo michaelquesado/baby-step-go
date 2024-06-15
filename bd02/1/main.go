@@ -1,6 +1,11 @@
 package main
 
-import "github.com/google/uuid"
+import (
+	"database/sql"
+
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
+)
 
 type Product struct {
 	Id    string
@@ -16,4 +21,10 @@ func NewProduct(name string, price float64) *Product {
 	}
 }
 
-func main() {}
+func main() {
+	db, err := sql.Open("mysql", "root:root@tcp(localhost:3306)/gotest")
+	if err != nil {
+		panic(err)
+	}
+	defer db.Close()
+}
