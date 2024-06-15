@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
@@ -36,6 +37,12 @@ func main() {
 	if err := updateProduct(db, p); err != nil {
 		panic(err)
 	}
+
+	product, err := findOneProduct(db, p.Id)
+	if err != nil {
+		panic(err)
+	}
+	fmt.Printf("Product name %v and price %2f \n", product.Name, product.Price)
 }
 
 func insertProduct(db *sql.DB, p *Product) error {
@@ -43,6 +50,7 @@ func insertProduct(db *sql.DB, p *Product) error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 	_, err = stmt.Exec(p.Id, p.Name, p.Price)
 	if err != nil {
 		return err
@@ -55,9 +63,24 @@ func updateProduct(db *sql.DB, p *Product) error {
 	if err != nil {
 		return err
 	}
+	defer stmt.Close()
 	_, err = stmt.Exec(p.Name, p.Price, p.Id)
 	if err != nil {
 		return err
 	}
 	return nil
+}
+
+func findOneProduct(db *sql.DB, id string) (*Product, error) {
+	stmt, err := db.Prepare("select id, name, price from products where id = ?")
+	if err != nil {
+		return nil, err
+	}
+	defer stmt.Close()
+	var p Product
+	err = stmt.QueryRow(id).Scan(&p.Id, &p.Name, &p.Price)
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
 }
