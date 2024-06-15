@@ -31,6 +31,11 @@ func main() {
 	if err := insertProduct(db, p); err != nil {
 		panic(err)
 	}
+	p.Name = "Camisa Super Polo 2 "
+	p.Price = 99.99
+	if err := updateProduct(db, p); err != nil {
+		panic(err)
+	}
 }
 
 func insertProduct(db *sql.DB, p *Product) error {
@@ -39,6 +44,18 @@ func insertProduct(db *sql.DB, p *Product) error {
 		return err
 	}
 	_, err = stmt.Exec(p.Id, p.Name, p.Price)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func updateProduct(db *sql.DB, p *Product) error {
+	stmt, err := db.Prepare("update products set name = ?, price = ? where id = ?")
+	if err != nil {
+		return err
+	}
+	_, err = stmt.Exec(p.Name, p.Price, p.Id)
 	if err != nil {
 		return err
 	}
