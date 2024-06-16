@@ -43,6 +43,14 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("Product name %v and price %2f \n", product.Name, product.Price)
+	println("All products 👇")
+	products, err := findAllProducts(db)
+	if err != nil {
+		panic(err)
+	}
+	for _, pro := range products {
+		fmt.Printf("id: %v | name: %v | price: %2f\n", pro.Id, pro.Name, pro.Price)
+	}
 }
 
 func insertProduct(db *sql.DB, p *Product) error {
@@ -83,4 +91,22 @@ func findOneProduct(db *sql.DB, id string) (*Product, error) {
 		return nil, err
 	}
 	return &p, nil
+}
+
+func findAllProducts(db *sql.DB) ([]Product, error) {
+	rows, err := db.Query("select * from products")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var products []Product
+	for rows.Next() {
+		var p Product
+		err = rows.Scan(&p.Id, &p.Name, &p.Price)
+		if err != nil {
+			return nil, err
+		}
+		products = append(products, p)
+	}
+	return products, nil
 }
