@@ -49,4 +49,15 @@ func main() {
 	// for _, c := range companies {
 	// 	fmt.Println(c)
 	// }
+	// var c Company
+	// db.First(&c, 1)
+	// c.Name = "Uninassau"
+	// db.Save(&c)
+
+	// var c2 Company
+	// db.First(&c2, 1)
+	// fmt.Println(c2)
+
+	// db.Delete(&c2)
+
 }
