@@ -9,10 +9,11 @@ type Company struct {
 	Id   int `gorm:"primaryKey;autoIncrement:true"`
 	Name string
 	CNPJ string
+	gorm.Model
 }
 
 func main() {
-	dsn := "root:root@tcp(localhost:3306)/gotest"
+	dsn := "root:root@tcp(localhost:3306)/gotest?charset=utf8mb4&parseTime=true&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -49,13 +50,14 @@ func main() {
 	// for _, c := range companies {
 	// 	fmt.Println(c)
 	// }
+
 	// var c Company
 	// db.First(&c, 1)
-	// c.Name = "Uninassau"
+	// c.Name = "Univerdade Patativa do Assare"
 	// db.Save(&c)
 
 	// var c2 Company
-	// db.First(&c2, 1)
+	// db.First(&c2, 2)
 	// fmt.Println(c2)
 
 	// db.Delete(&c2)
