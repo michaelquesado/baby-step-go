@@ -23,9 +23,24 @@ func main() {
 	// 	Name: "UPA",
 	// 	CNPJ: "87278810001/02",
 	// })
-	companies := []Company{
-		{Name: "FNJ", CNPJ: "0019283820001/02"},
-		{Name: "Paraiso", CNPJ: "991923902010001/93"},
-	}
-	db.Create(&companies)
+
+	// companies := []Company{
+	// 	{Name: "FNJ", CNPJ: "0019283820001/02"},
+	// 	{Name: "Paraiso", CNPJ: "991923902010001/93"},
+	// }
+	// db.Create(&companies)
+
+	// var c Company
+
+	// db.First(&c, 1)
+	// fmt.Println(c)
+
+	// db.First(&c, "name = ?", "Paraiso")
+	// fmt.Println(c)
+
+	// var companies []Company
+	// db.Find(&companies)
+	// for _, c := range companies {
+	// 	fmt.Println(c)
+	// }
 }
