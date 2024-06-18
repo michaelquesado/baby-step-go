@@ -12,6 +12,12 @@ type Company struct {
 	gorm.Model
 }
 
+type Product struct {
+	Id    string `gorm:"primaryKey"`
+	Name  string
+	Price float64
+}
+
 func main() {
 	dsn := "root:root@tcp(localhost:3306)/gotest?charset=utf8mb4&parseTime=true&loc=Local"
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
@@ -19,6 +25,11 @@ func main() {
 		panic(err)
 	}
 	db.AutoMigrate(&Company{})
+
+	// productName := "Camisa Polo"
+	// var p Product
+	// db.Find(&p, "name = ?", productName)
+	// fmt.Println(p)
 
 	// db.Create(&Company{
 	// 	Name: "UPA",
