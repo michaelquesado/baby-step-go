@@ -53,14 +53,14 @@ func main() {
 	// }
 
 	var categories []Category
-	err = db.Model(&Category{}).Preload("Product").Find(&categories).Error
+	err = db.Model(&Category{}).Preload("Product.SerialNumber").Find(&categories).Error
 	if err != nil {
 		panic(err)
 	}
 	for _, category := range categories {
 		fmt.Println(category.Name, ":")
 		for _, product := range category.Product {
-			fmt.Println("-", product.Name)
+			fmt.Println("-", product.Name, product.SerialNumber.Number)
 		}
 	}
 }
