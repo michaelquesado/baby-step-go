@@ -7,6 +7,13 @@ import (
 	"github.com/michaelquesado/baby-step-go/APIs/pkg/entity"
 )
 
+var (
+	ErrRequiredID    error = errors.New("ID is required")
+	ErrInvalidID     error = errors.New("invalid ID")
+	ErrRequiredName  error = errors.New("name is required")
+	ErrRequiredPrice error = errors.New("price is required")
+)
+
 type Product struct {
 	ID        entity.ID `json:"id"`
 	Name      string    `json:"name"`
@@ -30,16 +37,16 @@ func NewProduct(name string, price float64) (*Product, error) {
 
 func (p *Product) Validate() error {
 	if p.ID.String() == "" {
-		return errors.New("ID is required")
+		return ErrRequiredID
 	}
 	if _, err := entity.ParseID(p.ID.String()); err != nil {
-		return errors.New("invalid ID")
+		return ErrInvalidID
 	}
 	if p.Name == "" {
-		return errors.New("name is required")
+		return ErrRequiredName
 	}
 	if p.Price <= 0 {
-		return errors.New("price is required")
+		return ErrRequiredPrice
 	}
 	return nil
 }
