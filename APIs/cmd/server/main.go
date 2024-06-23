@@ -15,9 +15,7 @@ import (
 
 func main() {
 	config, _ := configs.LoadConfig(".")
-	// "root:root@tcp(localhost:3306)/gotest?charset=utf8mb4&parseTime=true&loc=Local"
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName)
-	println(dsn, config.DBPort)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -47,7 +45,6 @@ func (p *ProductHandler) CreateProductHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 	product, err := entity.NewProduct(dto.Name, dto.Price)
-	// println(product.ID.String())
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		return
