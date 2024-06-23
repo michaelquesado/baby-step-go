@@ -8,6 +8,7 @@ import (
 	"github.com/michaelquesado/baby-step-go/APIs/internal/dto"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/entity"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/infra/database"
+	pkg "github.com/michaelquesado/baby-step-go/APIs/pkg/entity"
 )
 
 type ProductHandler struct {
@@ -61,4 +62,30 @@ func (p *ProductHandler) FindOneProductHandler(w http.ResponseWriter, r *http.Re
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(product)
+}
+
+func (p *ProductHandler) UpdateProductHandler(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+	parsedId, err := pkg.ParseID(id)
+	if err != nil {
+		w.WriteHeader(http.StatusBadGateway)
+		return
+	}
+
+	var product entity.Product
+	err = json.NewDecoder(r.Body).Decode(&product)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	product.ID = parsedId
+	err = p.Repo.Update(&product)
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+
 }

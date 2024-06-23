@@ -44,7 +44,7 @@ func (p *ProductRepo) Update(product *entity.Product) error {
 	if _, err := p.FindOne(product.ID.String()); err != nil {
 		return err
 	}
-	return p.DB.Save(product).Error
+	return p.DB.Updates(&product).Error
 }
 
 func (p *ProductRepo) Delete(id string) error {

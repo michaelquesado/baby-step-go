@@ -28,6 +28,7 @@ func main() {
 	r := chi.NewRouter()
 	r.Post("/product", handler.CreateProductHandler)
 	r.Get("/product/{id}", handler.FindOneProductHandler)
+	r.Patch("/product/{id}", handler.UpdateProductHandler)
 
 	http.ListenAndServe(config.WebServerPort, r)
 }
