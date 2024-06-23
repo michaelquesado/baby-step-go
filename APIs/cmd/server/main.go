@@ -15,7 +15,7 @@ import (
 
 func main() {
 	config, _ := configs.LoadConfig(".")
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s", config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", config.DBUser, config.DBPassword, config.DBHost, config.DBPort, config.DBName)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		panic(err)
@@ -27,6 +27,7 @@ func main() {
 
 	r := chi.NewRouter()
 	r.Post("/product", handler.CreateProductHandler)
+	r.Get("/product/{id}", handler.FindOneProductHandler)
 
 	http.ListenAndServe(config.WebServerPort, r)
 }

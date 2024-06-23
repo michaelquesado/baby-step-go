@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/dto"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/entity"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/infra/database"
@@ -35,4 +36,29 @@ func (p *ProductHandler) CreateProductHandler(w http.ResponseWriter, r *http.Req
 		return
 	}
 	w.WriteHeader(http.StatusOK)
+}
+
+func (p *ProductHandler) FindOneProductHandler(w http.ResponseWriter, r *http.Request) {
+	id := chi.URLParam(r, "id")
+
+	if id == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	product, err := p.Repo.FindOne(id)
+
+	if err != nil && err.Error() != "record not found" {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	if err != nil && err.Error() == "record not found" {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(product)
 }
