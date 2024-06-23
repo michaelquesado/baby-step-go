@@ -1,0 +1,18 @@
+{{ template "header.html" }}
+    <table>
+        <thead>
+            <th>
+                <td>Game</td>
+                <td>Release Date</td>
+            </th>
+        </thead>
+        <tbody>
+            {{ range . }}
+                <tr>
+                    <td>{{.Name}}</td>
+                    <td>{{.Os}}</td>
+                </tr>
+            {{end}}
+        </tbody>
+    </table>
+{{ template "footer.html"}}
