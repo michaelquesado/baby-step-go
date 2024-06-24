@@ -25,11 +25,16 @@ func main() {
 	productRepo := database.NewProductRepo(db)
 	handler := handlers.NewProductHandler(productRepo)
 
+	userRepo := database.NewUserRepo(db)
+	userHandler := handlers.NewUserHandler(userRepo)
+
 	r := chi.NewRouter()
 	r.Post("/product", handler.CreateProductHandler)
 	r.Get("/product/{id}", handler.FindOneProductHandler)
 	r.Patch("/product/{id}", handler.UpdateProductHandler)
 	r.Get("/product", handler.ListAllProductHandler)
+
+	r.Post("/user", userHandler.CreateUserHandler)
 
 	http.ListenAndServe(config.WebServerPort, r)
 }
