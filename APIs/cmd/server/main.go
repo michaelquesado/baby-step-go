@@ -28,6 +28,8 @@ func main() {
 	userRepo := database.NewUserRepo(db)
 	userHandler := handlers.NewUserHandler(userRepo)
 
+	userJwtHandler := handlers.NewUserJwtHandler(*userRepo, config.TokenAuth, config.JWTExperesIn)
+
 	r := chi.NewRouter()
 	r.Post("/product", handler.CreateProductHandler)
 	r.Get("/product/{id}", handler.FindOneProductHandler)
@@ -35,6 +37,7 @@ func main() {
 	r.Get("/product", handler.ListAllProductHandler)
 
 	r.Post("/user", userHandler.CreateUserHandler)
+	r.Post("/user/login", userJwtHandler.GenerateTokenHandler)
 
 	http.ListenAndServe(config.WebServerPort, r)
 }

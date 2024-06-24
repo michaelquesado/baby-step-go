@@ -2,6 +2,7 @@ package entity
 
 import (
 	"errors"
+	"log"
 
 	"github.com/michaelquesado/baby-step-go/APIs/pkg/entity"
 	"golang.org/x/crypto/bcrypt"
@@ -48,6 +49,7 @@ func encryptPass(pass string) (string, error) {
 
 func (u *User) ValidadePassword(pass string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(pass))
+	log.Println(err)
 	return err == nil
 }
 
