@@ -26,14 +26,14 @@ func (p *ProductRepo) FindOne(id string) (*entity.Product, error) {
 
 }
 
-func (p *ProductRepo) FindAll(page, per_page int, sort string) ([]entity.Product, error) {
+func (p *ProductRepo) FindAll(page, perPage int, sort string) ([]entity.Product, error) {
 	var products []entity.Product
 	var err error
 	if sort != "" && sort != "asc" && sort != "desc" {
 		sort = "asc"
 	}
-	if page != 0 && per_page != 0 {
-		err = p.DB.Limit(per_page).Offset((page - 1) * per_page).Order("created_at " + sort).Find(&products).Error
+	if page != 0 && perPage != 0 {
+		err = p.DB.Limit(perPage).Offset((page - 1) * perPage).Order("created_at " + sort).Find(&products).Error
 		return products, err
 	}
 	err = p.DB.Order("created_at " + sort).Find(&products).Error

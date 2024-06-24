@@ -29,6 +29,7 @@ func main() {
 	r.Post("/product", handler.CreateProductHandler)
 	r.Get("/product/{id}", handler.FindOneProductHandler)
 	r.Patch("/product/{id}", handler.UpdateProductHandler)
+	r.Get("/product", handler.ListAllProductHandler)
 
 	http.ListenAndServe(config.WebServerPort, r)
 }

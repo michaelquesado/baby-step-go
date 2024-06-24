@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/dto"
@@ -36,7 +37,7 @@ func (p *ProductHandler) CreateProductHandler(w http.ResponseWriter, r *http.Req
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-	w.WriteHeader(http.StatusOK)
+	w.WriteHeader(http.StatusCreated)
 }
 
 func (p *ProductHandler) FindOneProductHandler(w http.ResponseWriter, r *http.Request) {
@@ -85,7 +86,36 @@ func (p *ProductHandler) UpdateProductHandler(w http.ResponseWriter, r *http.Req
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
-
 	w.WriteHeader(http.StatusOK)
+}
 
+func (p *ProductHandler) ListAllProductHandler(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	perPage := r.URL.Query().Get("per_page")
+	sort := r.URL.Query().Get("sort")
+	println("perPage: " + perPage)
+	if page == "" {
+		page = "1"
+	}
+	if perPage == "" {
+		perPage = "10"
+	}
+	parsedPage, err := strconv.Atoi(page)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	parsedPerPage, err := strconv.Atoi(perPage)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	products, err := p.Repo.FindAll(parsedPage, parsedPerPage, sort)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(products)
 }
