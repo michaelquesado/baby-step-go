@@ -11,14 +11,14 @@ func main() {
 	wg.Wait()
 }
 
-func reader(cn chan int, wg *sync.WaitGroup) {
+func reader(cn <-chan int, wg *sync.WaitGroup) {
 	for x := range cn {
 		println(x)
 		wg.Done()
 	}
 }
 
-func publisher(cn chan int) {
+func publisher(cn chan<- int) {
 	for i := 0; i < 10; i++ {
 		cn <- i
 	}
