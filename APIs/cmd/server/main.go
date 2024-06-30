@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth"
 	"github.com/michaelquesado/baby-step-go/APIs/configs"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/entity"
 	"github.com/michaelquesado/baby-step-go/APIs/internal/infra/database"
@@ -31,10 +32,14 @@ func main() {
 	userJwtHandler := handlers.NewUserJwtHandler(*userRepo, config.TokenAuth, config.JWTExperesIn)
 
 	r := chi.NewRouter()
-	r.Post("/product", handler.CreateProductHandler)
-	r.Get("/product/{id}", handler.FindOneProductHandler)
-	r.Patch("/product/{id}", handler.UpdateProductHandler)
-	r.Get("/product", handler.ListAllProductHandler)
+	r.Route("/product", func(r chi.Router) {
+		r.Use(jwtauth.Verifier(config.TokenAuth))
+		r.Use(jwtauth.Authenticator)
+		r.Post("/", handler.CreateProductHandler)
+		r.Get("/{id}", handler.FindOneProductHandler)
+		r.Patch("/{id}", handler.UpdateProductHandler)
+		r.Get("/", handler.ListAllProductHandler)
+	})
 
 	r.Post("/user", userHandler.CreateUserHandler)
 	r.Post("/user/login", userJwtHandler.GenerateTokenHandler)
