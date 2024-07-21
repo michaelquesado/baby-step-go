@@ -74,8 +74,17 @@ func (suite *EventDispatcherTestSuite) TestEventDispatcher_Register_Duplicated()
 	suite.Nil(err)
 
 	err = suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler)
-	suite.Equal(EventHandlerAlreadExists, err)
+	suite.Equal(ErrEventHandlerAlreadExists, err)
 	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
+}
+
+func (suite *EventDispatcherTestSuite) TestEventDispatcher_Clear() {
+	err := suite.eventDispatcher.Register(suite.event.GetName(), &suite.handler)
+	suite.Nil(err)
+	suite.Equal(1, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
+
+	suite.eventDispatcher.Clear()
+	suite.Equal(0, len(suite.eventDispatcher.handlers[suite.event.GetName()]))
 }
 
 func TestSuite(t *testing.T) {

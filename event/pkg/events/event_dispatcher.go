@@ -6,7 +6,7 @@ type EventHandlerDispatcher struct {
 	handlers map[string][]EventHandler
 }
 
-var EventHandlerAlreadExists = errors.New("Invalid Handler, its already exists.")
+var ErrEventHandlerAlreadExists = errors.New("invalid handler, its already exists")
 
 func NewEventDispatcher() *EventHandlerDispatcher {
 	return &EventHandlerDispatcher{
@@ -18,10 +18,15 @@ func (ed *EventHandlerDispatcher) Register(eventName string, eventHandler EventH
 	if _, ok := ed.handlers[eventName]; ok {
 		for _, h := range ed.handlers[eventName] {
 			if h == eventHandler {
-				return EventHandlerAlreadExists
+				return ErrEventHandlerAlreadExists
 			}
 		}
 	}
 	ed.handlers[eventName] = append(ed.handlers[eventName], eventHandler)
+	return nil
+}
+
+func (ed *EventHandlerDispatcher) Clear() error {
+	ed.handlers = make(map[string][]EventHandler)
 	return nil
 }
