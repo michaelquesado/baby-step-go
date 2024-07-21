@@ -32,3 +32,20 @@ func Consume(ch *amqp091.Channel, out chan<- amqp091.Delivery) error {
 	}
 	return nil
 }
+
+func Producer(ch *amqp091.Channel, msg []byte, exchange string) error {
+	err := ch.Publish(
+		exchange,
+		"",
+		false,
+		false,
+		amqp091.Publishing{
+			ContentType: "text/plain",
+			Body:        msg,
+		},
+	)
+	if err != nil {
+		return err
+	}
+	return nil
+}
