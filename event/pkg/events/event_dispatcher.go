@@ -30,3 +30,14 @@ func (ed *EventHandlerDispatcher) Clear() error {
 	ed.handlers = make(map[string][]EventHandler)
 	return nil
 }
+
+func (ed *EventHandlerDispatcher) Has(eventName string, eventHandler EventHandler) bool {
+	if _, ok := ed.handlers[eventName]; ok {
+		for _, h := range ed.handlers[eventName] {
+			if h == eventHandler {
+				return true
+			}
+		}
+	}
+	return false
+}
